@@ -17,17 +17,22 @@ from django.contrib import admin
 from django.urls import include, path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
+from rest_framework import permissions
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.authtoken.views import ObtainAuthToken
 
 schema_view = get_schema_view(
-   openapi.Info(
-      title="Car documentation",
-      default_version='v1',
-      description="Lorem ipsum",
-      terms_of_service="It's free, dude ;)",
-      contact=openapi.Contact(email="contact@divaltor.ru"),
-      license=openapi.License(name="MIT License"),
-   ),
-   public=True
+    openapi.Info(
+        title="Car documentation",
+        default_version='v1',
+        description="Lorem ipsum",
+        terms_of_service="It's free, dude ;)",
+        contact=openapi.Contact(email="contact@divaltor.ru"),
+        license=openapi.License(name="MIT License"),
+    ),
+    public=True,
+    permission_classes=[permissions.AllowAny],
+    authentication_classes=[TokenAuthentication]
 )
 
 
@@ -36,9 +41,12 @@ api_patterns = [
     path('', include('base.urls'))
 ]
 
+auth_patterns = [
+    path('auth/', ObtainAuthToken.as_view())
+]
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/', include(api_patterns)),
+    path('api/v1/', include(api_patterns + auth_patterns)),
     path('docs/swagger', schema_view.with_ui('swagger', cache_timeout=0))
 ]

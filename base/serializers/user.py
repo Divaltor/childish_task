@@ -16,6 +16,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
+            'id',
             'username',
             'email',
             'name',
@@ -24,7 +25,7 @@ class UserSerializer(serializers.ModelSerializer):
             'phone',
             'password'
         ]
-        read_only_fields = ['deactivated_date']
+        read_only_fields = ['id', 'deactivated_date']
 
     # noinspection PyMethodMayBeStatic
     def get_name(self, obj: User) -> str | None:

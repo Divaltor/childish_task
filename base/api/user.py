@@ -1,6 +1,7 @@
 from django.db.models import Q, QuerySet
 from django_filters import filters, FilterSet
 from rest_framework import viewsets
+from rest_framework.permissions import DjangoModelPermissions
 
 from base.models import User
 from base.serializers.user import UserSerializer
@@ -22,11 +23,21 @@ class UserFilterSet(FilterSet):
         )
 
 
+class UserCRUDPermission(DjangoModelPermissions):
+
+    def has_permission(self, request, view) -> bool:
+        if request.method == 'POST':
+            return True
+
+        return super().has_permission(request, view)
+
+
 class UserCRUDView(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
     filterset_class = UserFilterSet
+    permission_classes = [UserCRUDPermission]
 
     def get_queryset(self) -> QuerySet[User]:
         queryset = super().get_queryset()
