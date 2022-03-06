@@ -17,7 +17,7 @@ class SoftDeletableModel(models.Model):
     Default manager returns only not-removed entries.
     """
 
-    deleted_at = models.DateTimeField()
+    deleted_at = models.DateTimeField(null=True)
 
     objects = Manager()
     available_objects = SoftDeletableManager()

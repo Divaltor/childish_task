@@ -24,6 +24,7 @@ class CarModel(CreatedTimeModel):
         db_table = 'car_model'
         verbose_name = 'Car Model'
         verbose_name_plural = 'Car Models'
+        unique_together = [['name', 'car_brand']]
 
     def __str__(self) -> str:
         return f'{self.car_brand} - {self.name}'

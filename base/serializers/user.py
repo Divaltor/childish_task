@@ -1,3 +1,4 @@
+from django.contrib.auth.hashers import make_password
 from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework import serializers
 
@@ -8,6 +9,9 @@ class UserSerializer(serializers.ModelSerializer):
 
     name = serializers.SerializerMethodField(allow_null=True)
     phone = PhoneNumberField(source='phone_number')
+    password = serializers.CharField(
+        write_only=True
+    )
 
     class Meta:
         model = User
@@ -17,7 +21,8 @@ class UserSerializer(serializers.ModelSerializer):
             'name',
             'is_active',
             'deactivated_date',
-            'phone'
+            'phone',
+            'password'
         ]
         read_only_fields = ['deactivated_date']
 
@@ -33,3 +38,14 @@ class UserSerializer(serializers.ModelSerializer):
             return obj.last_name
 
         return
+
+    def create(self, validated_data: dict) -> User:
+        validated_data['password'] = make_password(validated_data.get('password'))
+        
+        return super().create(validated_data)
+    
+    def update(self, instance: User, validated_data: dict) -> dict:
+        if password := validated_data.get('password'):
+            validated_data['password'] = make_password(password)
+       
+        return super().update(instance, validated_data)
