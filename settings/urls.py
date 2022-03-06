@@ -30,10 +30,15 @@ schema_view = get_schema_view(
    public=True
 )
 
+
+api_patterns = [
+    path('', include('car_management.urls')),
+    path('', include('base.urls'))
+]
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/', include('car_management.urls')),
-    path('api/v1/', include('base.urls')),
-    path('docs/swagger.json', schema_view.without_ui(cache_timeout=0)),
+    path('api/v1/', include(api_patterns)),
     path('docs/swagger', schema_view.with_ui('swagger', cache_timeout=0))
 ]
